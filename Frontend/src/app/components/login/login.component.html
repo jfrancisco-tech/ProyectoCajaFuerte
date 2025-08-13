@@ -1,0 +1,53 @@
+<!-- Section: Login Block -->
+<section class="background-radial-gradient overflow-hidden" style="min-height: 100vh;">
+  <div class="login-flex-wrapper">
+    <div class="welcome-side">
+      <i class="fas fa-shield-alt" style="font-size: 4rem; color: #007bff; margin-bottom: 20px;"></i>
+      <h1 class="welcome-title">¡Bienvenido al Sistema de Seguridad!</h1>
+      <p class="welcome-desc">Accede al panel de control de la caja fuerte inteligente de manera segura.</p>
+    </div>
+    <div class="login-container">
+      <div class="image-background" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"></div>
+      <div class="bg-glass d-flex flex-column justify-content-center align-items-start">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" style="width: 100%;">
+          <!-- Usuario input -->
+          <div class="form-outline mb-4">
+            <input
+              type="text"
+              id="form3Example3"
+              class="form-control form-control-lg"
+              placeholder="Ingresa tu usuario"
+              formControlName="usuario"
+            />
+            <label class="form-label" for="form3Example3">Usuario</label>
+          </div>
+
+          <!-- Password input -->
+          <div class="form-outline mb-4">
+            <input
+              type="password"
+              id="form3Example4"
+              class="form-control form-control-lg"
+              placeholder="Ingresa tu contraseña"
+              formControlName="password"
+            />
+            <label class="form-label" for="form3Example4">Contraseña</label>
+          </div>
+
+          <!-- Mostrar mensaje de error si existe -->
+          <div *ngIf="errorMsg" class="alert alert-danger mb-3">
+            {{ errorMsg }}
+          </div>
+
+          <!-- Submit button -->
+          <button type="submit" class="btn btn-primary btn-lg w-100 mb-4" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+            {{ isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
+          </button>
+
+         
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
