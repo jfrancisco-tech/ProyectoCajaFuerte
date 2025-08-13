@@ -75,6 +75,18 @@ export class AuthService {
     return user?.usuario || 'Usuario';
   }
 
+  getUserRole(): string {
+    const user = this.getCurrentUser();
+    return user?.rol || 'usuario';
+  }
+
+  getUserFullInfo(): string {
+    const user = this.getCurrentUser();
+    const name = user?.usuario || 'Usuario';
+    const role = user?.rol === 'admin' ? 'Admin' : 'Usuario';
+    return `${name} ${role}`;
+  }
+
   // Método para cambiar contraseña del teclado
   changeKeypadPassword(currentPassword: string, newPassword: string): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/change-keypad-password`, {

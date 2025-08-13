@@ -26,7 +26,7 @@ export class InicioComponent implements OnInit {
 
   ngOnInit() {
     // Obtener información del usuario autenticado
-    this.nombreUsuario = this.authService.getUserName();
+    this.nombreUsuario = this.authService.getUserFullInfo();
     
     // Simulación de datos del sistema de seguridad
     this.sistemasActivos = 8;

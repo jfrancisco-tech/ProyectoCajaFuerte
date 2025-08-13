@@ -58,16 +58,22 @@
 
         <!-- Usuario y cerrar sesión -->
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <li class="nav-item dropdown" [class.show]="dropdownOpen">
+            <a class="nav-link dropdown-toggle d-flex align-items-center" 
+               href="#" 
+               role="button" 
+               (click)="toggleDropdown($event)"
+               aria-expanded="false">
               <i class="fas fa-user me-2"></i>
               {{ nombreUsuario }}
               <span class="badge bg-primary ms-2">{{ rolUsuario }}</span>
             </a>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" routerLink="/perfil"><i class="fas fa-user-edit me-2"></i>Mi Perfil</a></li>
+            <ul class="dropdown-menu dropdown-menu-end" [class.show]="dropdownOpen">
+              <li><a class="dropdown-item" routerLink="/perfil" (click)="closeDropdown()">
+                <i class="fas fa-user-edit me-2"></i>Mi Perfil</a></li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item text-danger" (click)="logout()"><i class="fas fa-sign-out-alt me-2"></i>Cerrar sesión</a></li>
+              <li><a class="dropdown-item text-danger" (click)="logout()">
+                <i class="fas fa-sign-out-alt me-2"></i>Cerrar sesión</a></li>
             </ul>
           </li>
         </ul>

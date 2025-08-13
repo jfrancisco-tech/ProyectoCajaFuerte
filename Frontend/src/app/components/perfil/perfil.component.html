@@ -1,21 +1,94 @@
-<div class="container-fluid py-4">
-  <div class="row">
-    <div class="col-12">
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">
-            <i class="fas fa-user-edit me-2"></i>
-            Mi Perfil
-          </h3>
-        </div>
-        <div class="card-body">
-          <p>Aquí podrás ver y editar tu información de perfil.</p>
-          <div class="alert alert-info">
-            <i class="fas fa-info-circle me-2"></i>
-            Funcionalidad en desarrollo
-          </div>
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      
+      <!-- Spinner de carga -->
+      <div *ngIf="loading" class="text-center">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Cargando...</span>
         </div>
       </div>
+
+      <!-- Perfil del usuario -->
+      <div *ngIf="!loading && userProfile" class="card shadow">
+        <div class="card-header bg-dark text-white">
+          <h4 class="mb-0">
+            <i class="fas fa-user-circle me-2"></i>
+            Mi Perfil
+          </h4>
+        </div>
+        <div class="card-body">
+          
+          <!-- Avatar y información principal -->
+          <div class="row mb-4">
+            <div class="col-md-3 text-center">
+              <div class="avatar-circle">
+                <i class="fas fa-user"></i>
+              </div>
+            </div>
+            <div class="col-md-9">
+              <h3 class="mb-1">{{ userProfile.nombre }}</h3>
+              <span [class]="getRoleColor(userProfile.rol)">{{ getRoleName(userProfile.rol) }}</span>
+            </div>
+          </div>
+
+          <!-- Información detallada -->
+          <div class="profile-info">
+            
+            <!-- Nombre de usuario -->
+            <div class="info-item">
+              <div class="info-label">
+                <i class="fas fa-user me-2"></i>
+                Nombre de Usuario
+              </div>
+              <div class="info-value">
+                {{ userProfile.nombre }}
+              </div>
+            </div>
+
+            <!-- Email -->
+            <div class="info-item">
+              <div class="info-label">
+                <i class="fas fa-envelope me-2"></i>
+                Correo Electrónico
+              </div>
+              <div class="info-value">
+                {{ userProfile.email }}
+              </div>
+            </div>
+
+            <!-- Rol -->
+            <div class="info-item">
+              <div class="info-label">
+                <i class="fas fa-shield-alt me-2"></i>
+                Rol en el Sistema
+              </div>
+              <div class="info-value">
+                <span [class]="getRoleColor(userProfile.rol)">{{ getRoleName(userProfile.rol) }}</span>
+              </div>
+            </div>
+
+          
+
+          </div>
+
+          <!-- Botones de acción -->
+          <div class="mt-4 text-center">
+            <button class="btn btn-outline-dark me-2" routerLink="/inicio">
+              <i class="fas fa-arrow-left me-1"></i>
+              Volver al Inicio
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="!loading && !userProfile" class="alert alert-danger">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        No se pudo cargar la información del perfil. Por favor, inicia sesión nuevamente.
+      </div>
+
     </div>
   </div>
 </div>

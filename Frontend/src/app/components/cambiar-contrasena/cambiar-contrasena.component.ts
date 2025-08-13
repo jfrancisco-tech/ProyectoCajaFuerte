@@ -59,4 +59,34 @@ export class CambiarContrasenaComponent {
       this.messageType = '';
     }, 5000);
   }
+
+  // Método para permitir solo números en los inputs
+  onlyNumbers(event: KeyboardEvent): boolean {
+    const charCode = event.which ? event.which : event.keyCode;
+    // Permitir teclas de control (backspace, delete, tab, etc.)
+    if (charCode === 8 || charCode === 9 || charCode === 27 || charCode === 46 ||
+        (charCode >= 35 && charCode <= 40)) {
+      return true;
+    }
+    // Permitir solo números (0-9)
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+      return false;
+    }
+    return true;
+  }
+
+  // Método para filtrar solo números al pegar texto
+  onPaste(event: ClipboardEvent): void {
+    event.preventDefault();
+    const pastedText = event.clipboardData?.getData('text') || '';
+    const numbersOnly = pastedText.replace(/[^0-9]/g, '').substring(0, 4);
+    
+    const target = event.target as HTMLInputElement;
+    const controlName = target.getAttribute('formControlName');
+    
+    if (controlName && this.changePasswordForm.get(controlName)) {
+      this.changePasswordForm.get(controlName)?.setValue(numbersOnly);
+    }
+  }
 }
