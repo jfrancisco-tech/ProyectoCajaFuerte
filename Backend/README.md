@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## atencion, todo esto se realizara mediante botones de adafruit y usaremos la kay y token para conectarnos a el, asi que el sera el intermediaro, todo esto usando el esp-32d
 
 ## ADVERTENCIA YA NO SE UTILIZARA BASE DE DATOS Y ALGUNOS SENSORES FURON REMOVIDOS, YA ESTA LA MAQUETA FISICA 
@@ -29,10 +30,53 @@ Uso: Abre o cierra la cerradura de la caja fuerte (si el acceso fue válido).
 
 💡 Extras (No se cuentan como sensores, pero son importantes)
 Rgb que indica el estado de la caja, azul cerrado, verde abierta, y rojo bloqueada
+=======
+# sistema de caja fuerte con implementacion de sensores en conjunto con adafruit
+
+# sensores que se van utilizar
+🔌 Sensores y Componentes Principales
+1. 📶 Lector RFID (RC522)
+Uso: Acceso alternativo mediante tarjeta.
+
+Columna asociada: rfid_tag en la tabla usuarios.
+
+2. 🔢 Teclado Matricial
+Uso: Acceso alternativo mediante PIN.
+
+Columna asociada: pin_code en la tabla usuarios.
+
+3. 👀 Sensor PIR (Infrarrojo Pasivo)
+Uso: Detección de movimiento frente a la caja fuerte.
+
+Evento registrado: deteccion_movimiento
+
+4. 📏 Sensor Ultrasónico (HC-SR04 o similar)
+Uso: Detecta si hay alguien demasiado cerca (proximidad).
+
+Evento registrado: deteccion_proximidad
+
+5. 🌀 Tilt Switch (sensor de inclinación)
+Uso: Detecta si alguien mueve o intenta abrir la caja de forma forzada.
+
+Evento registrado: inclinacion_detectada
+
+6. 🔒 Servomotor (SG90 o similar)
+Uso: Abre o cierra la cerradura de la caja fuerte (si el acceso fue válido).
+
+7. ⏰ Módulo RTC (DS3231) // en discusion si se va implementar, lo mas probable es que no 
+Uso: Controla acceso solo dentro de un horario permitido, y registra la hora real de los eventos.
+
+Evento registrado: hora_restringida si intentan acceder fuera de horario.
+
+💡 Extras (No se cuentan como sensores, pero son importantes)
+✅ LEDs (verde, rojo, azul)
+Uso: Indicadores visuales (acceso válido, error, alerta, etc.)
+>>>>>>> 84b79395e96e8ba7faccbdb1ac87c141adbe3ac0
 
 🔊 Buzzer
 Uso: Sonido de alerta o confirmación (acceso fallido, acceso exitoso, intento fuera de horario, etc.)
 
+<<<<<<< HEAD
 ## servicios a implementar en adafruit que necesito obliatoriamente
 ESP32 → Adafruit IO (MQTT o REST) → Backend Express → Angular
 Esto te permite:
@@ -652,3 +696,5 @@ void loop() {
 
 
 
+=======
+>>>>>>> 84b79395e96e8ba7faccbdb1ac87c141adbe3ac0
