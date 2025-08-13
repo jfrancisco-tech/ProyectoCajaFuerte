@@ -1,0 +1,112 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">
+            <i class="fas fa-key me-2"></i>
+            Cambiar Contraseña del Teclado
+          </h4>
+        </div>
+        <div class="card-body">
+          
+          <!-- Mensaje de estado -->
+          <div *ngIf="message" class="alert" [ngClass]="{
+            'alert-success': messageType === 'success',
+            'alert-danger': messageType === 'error'
+          }">
+            {{ message }}
+          </div>
+
+          <form [formGroup]="changePasswordForm" (ngSubmit)="onSubmit()">
+            
+            <!-- Contraseña actual -->
+            <div class="mb-3">
+              <label for="currentPassword" class="form-label">
+                <i class="fas fa-lock me-1"></i>
+                Contraseña Actual
+              </label>
+              <input 
+                type="password" 
+                class="form-control" 
+                id="currentPassword"
+                formControlName="currentPassword"
+                placeholder="Ingresa la contraseña actual (4 dígitos)"
+                maxlength="4"
+                [class.is-invalid]="changePasswordForm.get('currentPassword')?.invalid && changePasswordForm.get('currentPassword')?.touched">
+              <div class="invalid-feedback">
+                La contraseña debe tener exactamente 4 dígitos
+              </div>
+            </div>
+
+            <!-- Nueva contraseña -->
+            <div class="mb-3">
+              <label for="newPassword" class="form-label">
+                <i class="fas fa-key me-1"></i>
+                Nueva Contraseña
+              </label>
+              <input 
+                type="password" 
+                class="form-control" 
+                id="newPassword"
+                formControlName="newPassword"
+                placeholder="Ingresa la nueva contraseña (4 dígitos)"
+                maxlength="4"
+                [class.is-invalid]="changePasswordForm.get('newPassword')?.invalid && changePasswordForm.get('newPassword')?.touched">
+              <div class="invalid-feedback">
+                La contraseña debe tener exactamente 4 dígitos
+              </div>
+            </div>
+
+            <!-- Confirmar contraseña -->
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">
+                <i class="fas fa-check me-1"></i>
+                Confirmar Nueva Contraseña
+              </label>
+              <input 
+                type="password" 
+                class="form-control" 
+                id="confirmPassword"
+                formControlName="confirmPassword"
+                placeholder="Confirma la nueva contraseña"
+                maxlength="4"
+                [class.is-invalid]="changePasswordForm.get('confirmPassword')?.invalid && changePasswordForm.get('confirmPassword')?.touched">
+              <div class="invalid-feedback">
+                La contraseña debe tener exactamente 4 dígitos
+              </div>
+            </div>
+
+            <!-- Botones -->
+            <div class="d-grid gap-2">
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="!changePasswordForm.valid || loading">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                <i class="fas fa-save me-1"></i>
+                {{ loading ? 'Actualizando...' : 'Cambiar Contraseña' }}
+              </button>
+              
+              <button 
+                type="button" 
+                class="btn btn-secondary"
+                (click)="changePasswordForm.reset()">
+                <i class="fas fa-times me-1"></i>
+                Cancelar
+              </button>
+            </div>
+
+          </form>
+
+          <!-- Información adicional -->
+          <div class="alert alert-info mt-3">
+            <i class="fas fa-info-circle me-2"></i>
+            <strong>Nota:</strong> La contraseña debe tener exactamente 4 dígitos numéricos.
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

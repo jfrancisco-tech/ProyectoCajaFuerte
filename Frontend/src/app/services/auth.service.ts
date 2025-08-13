@@ -75,6 +75,14 @@ export class AuthService {
     return user?.usuario || 'Usuario';
   }
 
+  // Método para cambiar contraseña del teclado
+  changeKeypadPassword(currentPassword: string, newPassword: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/change-keypad-password`, {
+      currentPassword,
+      newPassword
+    });
+  }
+
   private setSession(token: string, user: User): void {
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));

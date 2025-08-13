@@ -1,5 +1,8 @@
 <<<<<<< HEAD
 ## atencion, todo esto se realizara mediante botones de adafruit y usaremos la kay y token para conectarnos a el, asi que el sera el intermediaro, todo esto usando el esp-32d
+=======
+<<<<<<< HEAD
+## atencion, todo esto se realizara mediante botones de adafruit y usaremos la kay y token para conectarnos a el, asi que el sera el intermediaro, todo esto usando el esp-32d
 
 ## ADVERTENCIA YA NO SE UTILIZARA BASE DE DATOS Y ALGUNOS SENSORES FURON REMOVIDOS, YA ESTA LA MAQUETA FISICA 
 
@@ -32,51 +35,51 @@ Uso: Abre o cierra la cerradura de la caja fuerte (si el acceso fue válido).
 Rgb que indica el estado de la caja, azul cerrado, verde abierta, y rojo bloqueada
 =======
 # sistema de caja fuerte con implementacion de sensores en conjunto con adafruit
+>>>>>>> 6e0908ee3599dfa2a4d18afb72c31369393c1c2d
 
-# sensores que se van utilizar
-🔌 Sensores y Componentes Principales
-1. 📶 Lector RFID (RC522)
-Uso: Acceso alternativo mediante tarjeta.
+## ADVERTENCIA YA NO SE UTILIZARA BASE DE DATOS Y ALGUNOS SENSORES FURON REMOVIDOS, YA ESTA LA MAQUETA FISICA 
 
-Columna asociada: rfid_tag en la tabla usuarios.
+'# sistema de caja fuerte con implementacion de sensores en conjunto con adafruit
 
-2. 🔢 Teclado Matricial
-Uso: Acceso alternativo mediante PIN.
 
-Columna asociada: pin_code en la tabla usuarios.
+1. y 2. #sensor de humedad para detectar presencia de humedad y temperatura y proteger documentos
 
-3. 👀 Sensor PIR (Infrarrojo Pasivo)
-Uso: Detección de movimiento frente a la caja fuerte.
-
-Evento registrado: deteccion_movimiento
+3. 🔢 Teclado Matricial
+Uso: accecer ala caja fuerte mediante pin y despues mover el servo al completar.
+se utiliza fisicamente y un boton en adafruit que sirve para cerrar y abrir caja fuerte o mover el servo
 
 4. 📏 Sensor Ultrasónico (HC-SR04 o similar)
-Uso: Detecta si hay alguien demasiado cerca (proximidad).
+Uso: Detecta el objeto que se encuentra dentro de la caja, podria ser joyeria, un muneco, o dinero (detecta objeto adentro o sin objeto).
 
-Evento registrado: deteccion_proximidad
+
 
 5. 🌀 Tilt Switch (sensor de inclinación)
 Uso: Detecta si alguien mueve o intenta abrir la caja de forma forzada.
+(manipulacion de la caja)
 
-Evento registrado: inclinacion_detectada
 
+# usaremos 1 servo motor para morver como palanca el cerrojo de la caja fuerte
 6. 🔒 Servomotor (SG90 o similar)
 Uso: Abre o cierra la cerradura de la caja fuerte (si el acceso fue válido).
 
-7. ⏰ Módulo RTC (DS3231) // en discusion si se va implementar, lo mas probable es que no 
-Uso: Controla acceso solo dentro de un horario permitido, y registra la hora real de los eventos.
 
-Evento registrado: hora_restringida si intentan acceder fuera de horario.
 
 💡 Extras (No se cuentan como sensores, pero son importantes)
+<<<<<<< HEAD
+Rgb que indica el estado de la caja, azul cerrado, verde abierta, y rojo bloqueada
+=======
 ✅ LEDs (verde, rojo, azul)
 Uso: Indicadores visuales (acceso válido, error, alerta, etc.)
 >>>>>>> 84b79395e96e8ba7faccbdb1ac87c141adbe3ac0
+>>>>>>> 6e0908ee3599dfa2a4d18afb72c31369393c1c2d
 
 🔊 Buzzer
 Uso: Sonido de alerta o confirmación (acceso fallido, acceso exitoso, intento fuera de horario, etc.)
 
 <<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6e0908ee3599dfa2a4d18afb72c31369393c1c2d
 ## servicios a implementar en adafruit que necesito obliatoriamente
 ESP32 → Adafruit IO (MQTT o REST) → Backend Express → Angular
 Esto te permite:
@@ -696,5 +699,8 @@ void loop() {
 
 
 
+<<<<<<< HEAD
+=======
 =======
 >>>>>>> 84b79395e96e8ba7faccbdb1ac87c141adbe3ac0
+>>>>>>> 6e0908ee3599dfa2a4d18afb72c31369393c1c2d

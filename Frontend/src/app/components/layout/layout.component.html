@@ -22,27 +22,19 @@
             </a>
           </li>
 
-          <!-- Acceso RFID -->
+          <!-- Sensores -->
           <li class="nav-item">
-            <a class="nav-link" routerLink="/acceso-rfid" routerLinkActive="active">
-              <i class="fas fa-id-card me-1"></i>
-              Acceso RFID
+            <a class="nav-link" routerLink="/sensores" routerLinkActive="active">
+              <i class="fas fa-microchip me-1"></i>
+              Sensores
             </a>
           </li>
 
-          <!-- Acceso por PIN -->
+          <!-- Feeds -->
           <li class="nav-item">
-            <a class="nav-link" routerLink="/acceso-pin" routerLinkActive="active">
-              <i class="fas fa-keyboard me-1"></i>
-              Acceso PIN
-            </a>
-          </li>
-
-          <!-- Eventos de sensores -->
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/eventos" routerLinkActive="active">
-              <i class="fas fa-bell me-1"></i>
-              Eventos
+            <a class="nav-link" routerLink="/feeds" routerLinkActive="active">
+              <i class="fas fa-rss me-1"></i>
+              Feeds
             </a>
           </li>
 
@@ -54,11 +46,11 @@
             </a>
           </li>
 
-          <!-- Configuración (solo admin) -->
-          <li class="nav-item" *ngIf="isAdmin()">
-            <a class="nav-link" routerLink="/configuracion" routerLinkActive="active">
-              <i class="fas fa-cog me-1"></i>
-              Configuración
+          <!-- Cambiar contraseña -->
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/cambiar-contrasena" routerLinkActive="active">
+              <i class="fas fa-key me-1"></i>
+              Cambiar contraseña
             </a>
           </li>
 
