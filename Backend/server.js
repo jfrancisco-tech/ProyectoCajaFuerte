@@ -20,9 +20,13 @@ app.get('/', (req, res) => {
 
 // Importar rutas
 const authRoutes = require('./routes/auth');
+const sensorsRoutes = require('./routes/sensors');
+const adafruitRoutes = require('./routes/adafruit');
 
 // Usar rutas
 app.use('/api/auth', authRoutes);
+app.use('/api/sensors', sensorsRoutes);
+app.use('/api/adafruit', adafruitRoutes);
 
 const PORT = process.env.PORT || 3000;
 

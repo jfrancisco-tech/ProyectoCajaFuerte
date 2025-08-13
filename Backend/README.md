@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+## atencion, todo esto se realizara mediante botones de adafruit y usaremos la kay y token para conectarnos a el, asi que el sera el intermediaro, todo esto usando el esp-32d
+=======
+<<<<<<< HEAD
 ## atencion, todo esto se realizara mediante botones de adafruit y usaremos la kay y token para conectarnos a el, asi que el sera el intermediaro, todo esto usando el esp-32d
 
 ## ADVERTENCIA YA NO SE UTILIZARA BASE DE DATOS Y ALGUNOS SENSORES FURON REMOVIDOS, YA ESTA LA MAQUETA FISICA 
@@ -29,10 +33,53 @@ Uso: Abre o cierra la cerradura de la caja fuerte (si el acceso fue válido).
 
 💡 Extras (No se cuentan como sensores, pero son importantes)
 Rgb que indica el estado de la caja, azul cerrado, verde abierta, y rojo bloqueada
+=======
+# sistema de caja fuerte con implementacion de sensores en conjunto con adafruit
+>>>>>>> 6e0908ee3599dfa2a4d18afb72c31369393c1c2d
+
+## ADVERTENCIA YA NO SE UTILIZARA BASE DE DATOS Y ALGUNOS SENSORES FURON REMOVIDOS, YA ESTA LA MAQUETA FISICA 
+
+'# sistema de caja fuerte con implementacion de sensores en conjunto con adafruit
+
+
+1. y 2. #sensor de humedad para detectar presencia de humedad y temperatura y proteger documentos
+
+3. 🔢 Teclado Matricial
+Uso: accecer ala caja fuerte mediante pin y despues mover el servo al completar.
+se utiliza fisicamente y un boton en adafruit que sirve para cerrar y abrir caja fuerte o mover el servo
+
+4. 📏 Sensor Ultrasónico (HC-SR04 o similar)
+Uso: Detecta el objeto que se encuentra dentro de la caja, podria ser joyeria, un muneco, o dinero (detecta objeto adentro o sin objeto).
+
+
+
+5. 🌀 Tilt Switch (sensor de inclinación)
+Uso: Detecta si alguien mueve o intenta abrir la caja de forma forzada.
+(manipulacion de la caja)
+
+
+# usaremos 1 servo motor para morver como palanca el cerrojo de la caja fuerte
+6. 🔒 Servomotor (SG90 o similar)
+Uso: Abre o cierra la cerradura de la caja fuerte (si el acceso fue válido).
+
+
+
+💡 Extras (No se cuentan como sensores, pero son importantes)
+<<<<<<< HEAD
+Rgb que indica el estado de la caja, azul cerrado, verde abierta, y rojo bloqueada
+=======
+✅ LEDs (verde, rojo, azul)
+Uso: Indicadores visuales (acceso válido, error, alerta, etc.)
+>>>>>>> 84b79395e96e8ba7faccbdb1ac87c141adbe3ac0
+>>>>>>> 6e0908ee3599dfa2a4d18afb72c31369393c1c2d
 
 🔊 Buzzer
 Uso: Sonido de alerta o confirmación (acceso fallido, acceso exitoso, intento fuera de horario, etc.)
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> 6e0908ee3599dfa2a4d18afb72c31369393c1c2d
 ## servicios a implementar en adafruit que necesito obliatoriamente
 ESP32 → Adafruit IO (MQTT o REST) → Backend Express → Angular
 Esto te permite:
@@ -652,3 +699,8 @@ void loop() {
 
 
 
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> 84b79395e96e8ba7faccbdb1ac87c141adbe3ac0
+>>>>>>> 6e0908ee3599dfa2a4d18afb72c31369393c1c2d
