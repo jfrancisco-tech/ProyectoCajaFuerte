@@ -1,0 +1,316 @@
+/* Tarjetas con bordes de colores */
+.card.border-left-primary {
+  border-left: 0.25rem solid #4e73df !important;
+}
+
+.card.border-left-warning {
+  border-left: 0.25rem solid #f6c23e !important;
+}
+
+.card.shadow {
+  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+  transition: all 0.3s;
+}
+
+.card.shadow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0.25rem 2rem 0 rgba(58, 59, 69, 0.2) !important;
+}
+
+/* Indicadores de estado */
+.door-status-indicator {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  transition: all 0.3s;
+}
+
+.door-status-indicator.text-success {
+  background: linear-gradient(135deg, #1cc88a, #13855c);
+  color: white;
+  animation: pulse-success 2s infinite;
+}
+
+.door-status-indicator.text-primary {
+  background: linear-gradient(135deg, #4e73df, #224abe);
+  color: white;
+}
+
+@keyframes pulse-success {
+  0% { box-shadow: 0 0 0 0 rgba(28, 200, 138, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(28, 200, 138, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(28, 200, 138, 0); }
+}
+
+/* Indicadores de sensores */
+.object-indicator,
+.vibration-indicator {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.object-indicator.text-success {
+  background: linear-gradient(135deg, #1cc88a, #13855c);
+  color: white;
+}
+
+.object-indicator.text-muted {
+  background: #f8f9fc;
+  color: #5a5c69;
+  border: 2px solid #e3e6f0;
+}
+
+.vibration-indicator.text-danger {
+  background: linear-gradient(135deg, #e74a3b, #c0392b);
+  color: white;
+  animation: shake 0.5s infinite;
+}
+
+.vibration-indicator.text-success {
+  background: linear-gradient(135deg, #1cc88a, #13855c);
+  color: white;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+/* Barras de progreso personalizadas */
+.temp-bar,
+.humidity-bar {
+  width: 100%;
+  height: 8px;
+  background: #e3e6f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.temp-progress {
+  height: 100%;
+  background: linear-gradient(90deg, #36b9cc, #258391);
+  transition: width 0.5s ease;
+  border-radius: 4px;
+}
+
+.humidity-progress {
+  height: 100%;
+  background: linear-gradient(90deg, #4e73df, #224abe);
+  transition: width 0.5s ease;
+  border-radius: 4px;
+}
+
+/* Valores de sensores */
+.temp-value,
+.humidity-value {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 15px 0;
+}
+
+.temp-value.text-success {
+  color: #1cc88a !important;
+}
+
+.temp-value.text-warning {
+  color: #f6c23e !important;
+}
+
+.humidity-value.text-success {
+  color: #1cc88a !important;
+}
+
+.humidity-value.text-warning {
+  color: #f6c23e !important;
+}
+
+/* Información adicional */
+.info-box {
+  background: #f8f9fc;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  border-left: 3px solid #4e73df;
+}
+
+.info-box h6 {
+  margin-bottom: 8px;
+  color: #5a5c69;
+  font-weight: 600;
+}
+
+/* Badges personalizados */
+.badge-success {
+  background-color: #1cc88a !important;
+}
+
+.badge-warning {
+  background-color: #f6c23e !important;
+}
+
+.badge-danger {
+  background-color: #e74a3b !important;
+}
+
+/* Log de eventos */
+.event-log {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.event-item {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-bottom: 1px solid #e3e6f0;
+  transition: background 0.3s;
+}
+
+.event-item:hover {
+  background: #f8f9fc;
+}
+
+.event-item:last-child {
+  border-bottom: none;
+}
+
+.event-time {
+  min-width: 80px;
+  font-size: 0.85rem;
+  color: #6c757d;
+  font-family: 'Monaco', 'Courier New', monospace;
+}
+
+.event-icon {
+  margin: 0 15px;
+  width: 20px;
+  text-align: center;
+}
+
+.event-message {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+.event-error {
+  border-left: 3px solid #e74a3b;
+}
+
+.event-security {
+  border-left: 3px solid #f6c23e;
+}
+
+.event-door {
+  border-left: 3px solid #4e73df;
+}
+
+.event-sensor {
+  border-left: 3px solid #1cc88a;
+}
+
+/* Botones personalizados */
+.btn {
+  transition: all 0.3s;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+  .temp-value,
+  .humidity-value {
+    font-size: 2rem;
+  }
+  
+  .door-status-indicator {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .door-status-indicator i {
+    font-size: 1.5rem !important;
+  }
+  
+  .object-indicator,
+  .vibration-indicator {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .event-time {
+    min-width: 60px;
+    font-size: 0.75rem;
+  }
+}
+
+/* Texto con gradientes */
+.text-gradient {
+  background: linear-gradient(135deg, #4e73df, #224abe);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animaciones de carga */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Estados especiales */
+.status-normal {
+  color: #1cc88a;
+}
+
+.status-warning {
+  color: #f6c23e;
+}
+
+.status-danger {
+  color: #e74a3b;
+}
+
+.status-info {
+  color: #36b9cc;
+}
+
+/* Scrollbar personalizada */
+.event-log::-webkit-scrollbar {
+  width: 6px;
+}
+
+.event-log::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.event-log::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.event-log::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}

@@ -1,18 +1,278 @@
 <div class="container-fluid py-4">
-  <div class="row">
+  <!-- Header -->
+  <div class="row mb-4">
     <div class="col-12">
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">
-            <i class="fas fa-microchip me-2"></i>
-            Sensores
-          </h3>
+      <div class="d-flex justify-content-between align-items-center">
+        <h2>
+          <i class="fas fa-microchip me-2 text-primary"></i>
+          Panel de Sensores - Caja Fuerte IoT
+        </h2>
+        <button class="btn btn-success" (click)="refreshAllSensors()">
+          <i class="fas fa-sync-alt me-2"></i>
+          Actualizar Todo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado General del Sistema -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card border-left-primary shadow h-100">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                Estado de la Caja Fuerte
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">
+                <span [class]="getStatusClass()">
+                  <i [class]="getStatusIcon()"></i>
+                  {{ getStatusText() }}
+                </span>
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-shield-alt fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card border-left-warning shadow h-100">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                Última Actualización
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">
+                {{ lastUpdate | date:'dd/MM/yyyy HH:mm:ss' }}
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-clock fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Control de Puerta -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+          <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-door-open me-2"></i>
+            Control de Puerta
+          </h6>
+          <div class="btn-group" role="group">
+            <button class="btn btn-sm btn-success" (click)="openDoor()" [disabled]="doorData?.state">
+              <i class="fas fa-lock-open me-1"></i>
+              Abrir
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="closeDoor()" [disabled]="!doorData?.state">
+              <i class="fas fa-lock me-1"></i>
+              Cerrar
+            </button>
+            <button class="btn btn-sm btn-outline-primary" (click)="toggleDoor()">
+              <i class="fas fa-key me-1"></i>
+              {{ doorData?.state ? 'Cerrar' : 'Abrir' }}
+            </button>
+          </div>
         </div>
         <div class="card-body">
-          <p>Aquí se mostrarán los datos de los sensores de la caja fuerte.</p>
-          <div class="alert alert-info">
-            <i class="fas fa-info-circle me-2"></i>
-            Funcionalidad en desarrollo
+          <div class="row">
+            <div class="col-md-4">
+              <div class="text-center">
+                <div class="door-status-indicator" [class]="getDoorStatusClass()">
+                  <i [class]="getDoorIcon()" class="fa-3x"></i>
+                </div>
+                <h5 class="mt-3">{{ doorData?.state ? 'ABIERTA' : 'CERRADA' }}</h5>
+                <p class="text-muted">Estado actual de la puerta</p>
+              </div>
+            </div>
+            <div class="col-md-8">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="info-box">
+                    <h6>Intentos Fallidos</h6>
+                    <span class="badge" [class]="getAttemptsClass()">
+                      {{ securityData?.attempts || 0 }}/3
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="info-box">
+                    <h6>Último Acceso</h6>
+                    <small class="text-muted">{{ doorData?.lastAccess | date:'HH:mm:ss' }}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sensores Ambientales -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-thermometer-half me-2"></i>
+            Temperatura
+          </h6>
+        </div>
+        <div class="card-body text-center">
+          <div class="temperature-display">
+            <div class="temp-value" [class]="getTempClass()">
+              {{ ambientalData?.temperature || '--' }}°C
+            </div>
+            <div class="temp-bar">
+              <div class="temp-progress" [style.width.%]="getTempProgress()"></div>
+            </div>
+            <small class="text-muted">Rango óptimo: 18-27°C</small>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-tint me-2"></i>
+            Humedad
+          </h6>
+        </div>
+        <div class="card-body text-center">
+          <div class="humidity-display">
+            <div class="humidity-value" [class]="getHumidityClass()">
+              {{ ambientalData?.humidity || '--' }}%
+            </div>
+            <div class="humidity-bar">
+              <div class="humidity-progress" [style.width.%]="getHumidityProgress()"></div>
+            </div>
+            <small class="text-muted">Rango óptimo: 30-60%</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sensores de Seguridad -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-cube me-2"></i>
+            Detector de Objetos
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-auto">
+              <div class="object-indicator" [class]="getObjectStatusClass()">
+                <i [class]="getObjectIcon()" class="fa-2x"></i>
+              </div>
+            </div>
+            <div class="col">
+              <div class="object-info">
+                <h5>{{ objectData?.detected ? 'Objeto Detectado' : 'Sin Objetos' }}</h5>
+                <p class="mb-1">Distancia: <strong>{{ objectData?.distance || '--' }} cm</strong></p>
+                <small class="text-muted">Sensibilidad: < 18cm</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-hand-rock me-2"></i>
+            Sensor de Vibración
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-auto">
+              <div class="vibration-indicator" [class]="getVibrationStatusClass()">
+                <i [class]="getVibrationIcon()" class="fa-2x"></i>
+              </div>
+            </div>
+            <div class="col">
+              <div class="vibration-info">
+                <h5>{{ vibrationData?.detected ? 'Movimiento Detectado' : 'Sin Movimiento' }}</h5>
+                <p class="mb-1">Estado: <strong>{{ getVibrationStatus() }}</strong></p>
+                <small class="text-muted">Sensor de inclinación activo</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos en Tiempo Real -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-chart-line me-2"></i>
+            Monitoreo en Tiempo Real
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h6>Temperatura (°C)</h6>
+              <div style="height: 300px;">
+                <canvas id="temperatureChart"></canvas>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <h6>Humedad (%)</h6>
+              <div style="height: 300px;">
+                <canvas id="humidityChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Log de Eventos -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-list me-2"></i>
+            Registro de Eventos Recientes
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="event-log">
+            <div *ngFor="let event of recentEvents" class="event-item" [class]="getEventClass(event.type)">
+              <div class="event-time">{{ event.timestamp | date:'HH:mm:ss' }}</div>
+              <div class="event-icon">
+                <i [class]="getEventIcon(event.type)"></i>
+              </div>
+              <div class="event-message">{{ event.message }}</div>
+            </div>
+            <div *ngIf="recentEvents.length === 0" class="text-center text-muted py-3">
+              No hay eventos recientes
+            </div>
           </div>
         </div>
       </div>
