@@ -291,6 +291,45 @@ class AuthController {
     }
   }
 
+  // Cambiar contraseña del teclado
+  static async changeKeypadPassword(req, res) {
+    try {
+      const { newPassword } = req.body;
+      const userId = req.user.id;
+
+      // Validar que la nueva contraseña sea de 4 dígitos
+      if (!newPassword || !/^\d{4}$/.test(newPassword)) {
+        return res.status(400).json({
+          success: false,
+          message: 'La contraseña debe tener exactamente 4 dígitos'
+        });
+      }
+
+      // Aquí deberías enviar la nueva contraseña a Adafruit IO
+      // Por ejemplo: await adafruitService.updateKeypadPassword(newPassword);
+      
+      // Registrar en auditoría
+      await AuthController.registrarAuditoria(userId, 'cambio_password_teclado', {
+        usuario_id: userId,
+        ip: req.ip,
+        timestamp: new Date().toISOString()
+      });
+
+      res.json({
+        success: true,
+        message: 'Contraseña del teclado actualizada exitosamente'
+      });
+
+    } catch (error) {
+      console.error('Error cambiando contraseña del teclado:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Error interno del servidor',
+        error: error.message
+      });
+    }
+  }
+
   // Función auxiliar para registrar en auditoría
   static async registrarAuditoria(usuario_id, accion, detalles) {
     try {

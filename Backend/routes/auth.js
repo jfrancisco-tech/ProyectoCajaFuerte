@@ -15,6 +15,9 @@ router.get('/verify', AuthController.verifyToken);
 // Logout del sistema web
 router.post('/logout', authMiddleware, AuthController.logout);
 
+// Cambiar contraseña del teclado (requiere autenticación)
+router.post('/change-keypad-password', authMiddleware, AuthController.changeKeypadPassword);
+
 // Obtener perfil del usuario autenticado
 router.get('/profile', authMiddleware, (req, res) => {
   res.json({
