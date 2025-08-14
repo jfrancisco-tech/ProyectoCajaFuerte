@@ -294,7 +294,7 @@ class AuthController {
   // Cambiar contraseña del teclado
   static async changeKeypadPassword(req, res) {
     try {
-      const { newPassword } = req.body;
+      const { currentPassword, newPassword } = req.body;
       const userId = req.user.id;
 
       // Validar que la nueva contraseña sea de 4 dígitos
@@ -305,14 +305,52 @@ class AuthController {
         });
       }
 
-      // Aquí deberías enviar la nueva contraseña a Adafruit IO
-      // Por ejemplo: await adafruitService.updateKeypadPassword(newPassword);
+      // Validar que la contraseña actual sea de 4 dígitos
+      if (!currentPassword || !/^\d{4}$/.test(currentPassword)) {
+        return res.status(400).json({
+          success: false,
+          message: 'La contraseña actual debe tener exactamente 4 dígitos'
+        });
+      }
+
+      // Importar el servicio de Adafruit
+      const adafruitService = require('../services/adafruitService');
+
+      // Verificar la contraseña actual
+      const currentPinResult = await adafruitService.getCurrentKeypadPassword();
+      
+      if (!currentPinResult.success) {
+        return res.status(500).json({
+          success: false,
+          message: 'Error al verificar PIN actual'
+        });
+      }
+
+      // Validar que la contraseña actual coincida
+      if (currentPinResult.pin !== currentPassword) {
+        return res.status(400).json({
+          success: false,
+          message: 'La contraseña actual es incorrecta'
+        });
+      }
+
+      // Enviar la nueva contraseña a Adafruit IO
+      const updateResult = await adafruitService.updateKeypadPassword(newPassword);
+      
+      if (!updateResult.success) {
+        return res.status(500).json({
+          success: false,
+          message: 'Error al actualizar PIN en el dispositivo: ' + updateResult.error
+        });
+      }
       
       // Registrar en auditoría
       await AuthController.registrarAuditoria(userId, 'cambio_password_teclado', {
         usuario_id: userId,
         ip: req.ip,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        pin_anterior: currentPassword.replace(/./g, '*'), // Ocultar PIN por seguridad
+        pin_nuevo: newPassword.replace(/./g, '*') // Ocultar PIN por seguridad
       });
 
       res.json({
@@ -343,6 +381,39 @@ class AuthController {
       await connection.end();
     } catch (error) {
       console.error('Error registrando auditoría:', error);
+    }
+  }
+
+  // Endpoint temporal para inicializar PIN por defecto (solo para desarrollo)
+  static async initializeDefaultPin(req, res) {
+    try {
+      // Importar el servicio de Adafruit
+      const adafruitService = require('../services/adafruitService');
+
+      // Inicializar PIN por defecto
+      const result = await adafruitService.initializeDefaultPin();
+      
+      if (result.success) {
+        res.json({
+          success: true,
+          message: result.message,
+          pin: result.pin
+        });
+      } else {
+        res.status(500).json({
+          success: false,
+          message: 'Error inicializando PIN por defecto',
+          error: result.error
+        });
+      }
+
+    } catch (error) {
+      console.error('Error inicializando PIN por defecto:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Error interno del servidor',
+        error: error.message
+      });
     }
   }
 }

@@ -285,6 +285,108 @@ class AdafruitService {
       ambiente_estable: tempOk && humOk
     };
   }
+
+  // ==================== CAMBIO DE PIN DEL TECLADO ====================
+  
+  // Cambiar PIN del teclado enviando nuevo PIN a Adafruit IO
+  async updateKeypadPassword(newPin) {
+    try {
+      // Validar que el PIN sea de 4 dígitos
+      if (!newPin || !/^\d{4}$/.test(newPin)) {
+        throw new Error('El PIN debe tener exactamente 4 dígitos');
+      }
+
+      // Enviar nuevo PIN al feed de Adafruit IO
+      const result = await this.createData('pin-teclado', newPin);
+      
+      if (result.success) {
+        console.log(`PIN del teclado actualizado a: ${newPin}`);
+        return {
+          success: true,
+          message: 'PIN del teclado actualizado exitosamente en Adafruit IO',
+          data: result.data
+        };
+      } else {
+        throw new Error(result.error || 'Error al actualizar PIN en Adafruit IO');
+      }
+    } catch (error) {
+      console.error('Error actualizando PIN del teclado:', error.message);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
+
+  // Obtener PIN actual del teclado
+  async getCurrentKeypadPassword() {
+    try {
+      const result = await this.getLastData('pin-teclado');
+      
+      if (result.success && result.data) {
+        return {
+          success: true,
+          pin: result.data.value || '1144' // PIN por defecto si no hay datos
+        };
+      } else {
+        return {
+          success: true,
+          pin: '1144' // PIN por defecto
+        };
+      }
+    } catch (error) {
+      console.error('Error obteniendo PIN actual:', error.message);
+      return {
+        success: true,
+        pin: '1144' // PIN por defecto en caso de error
+      };
+    }
+  }
+
+  // Inicializar PIN por defecto si no existe
+  async initializeDefaultPin() {
+    try {
+      console.log('🔐 Verificando PIN inicial en Adafruit IO...');
+      
+      // Intentar obtener el PIN actual
+      const currentResult = await this.getLastData('pin-teclado');
+      
+      if (!currentResult.success || !currentResult.data) {
+        console.log('📝 No se encontró PIN en Adafruit IO, estableciendo PIN por defecto: 1144');
+        
+        // Establecer PIN por defecto
+        const initResult = await this.createData('pin-teclado', '1144');
+        
+        if (initResult.success) {
+          console.log('✅ PIN por defecto establecido exitosamente en Adafruit IO');
+          return {
+            success: true,
+            message: 'PIN por defecto inicializado',
+            pin: '1144'
+          };
+        } else {
+          console.error('❌ Error estableciendo PIN por defecto:', initResult.error);
+          return {
+            success: false,
+            error: initResult.error
+          };
+        }
+      } else {
+        console.log(`✅ PIN ya existe en Adafruit IO: ${currentResult.data.value}`);
+        return {
+          success: true,
+          message: 'PIN ya existe',
+          pin: currentResult.data.value
+        };
+      }
+    } catch (error) {
+      console.error('Error inicializando PIN por defecto:', error.message);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
+  }
 }
 
 module.exports = new AdafruitService();
