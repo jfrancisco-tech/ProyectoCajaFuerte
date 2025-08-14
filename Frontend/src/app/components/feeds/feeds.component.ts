@@ -29,6 +29,13 @@ export class FeedsComponent implements OnInit, OnDestroy {
   editingFeed: Feed | null = null;
   feedToDelete: Feed | null = null;
 
+  // Estado para edición inline/eliminación inmediata de puntos
+  editingDataPoint: { feedKey: string; id: string; value: string } | null = null;
+
+  // Mensajes de estado (reemplaza alerts del navegador)
+  message = '';
+  messageType: 'success' | 'error' | '' = '';
+
   // Formulario de edición
   editForm = {
     name: '',
@@ -198,12 +205,15 @@ export class FeedsComponent implements OnInit, OnDestroy {
           console.log('Feed actualizado exitosamente');
           this.loadFeeds(); // Recargar la lista
           this.closeEditModal();
+          this.showMessage('Feed actualizado correctamente', 'success');
         } else {
           console.error('Error al actualizar feed:', response.message);
+          this.showMessage('Error al actualizar feed: ' + (response.message || 'Error desconocido'), 'error');
         }
       },
       error: (error) => {
         console.error('Error al actualizar feed:', error);
+        this.showMessage('Error al actualizar feed: ' + (error.error?.message || error.message || 'Error de conexión'), 'error');
       }
     });
   }
@@ -218,12 +228,15 @@ export class FeedsComponent implements OnInit, OnDestroy {
           console.log('Feed eliminado exitosamente');
           this.loadFeeds(); // Recargar la lista
           this.closeDeleteModal();
+          this.showMessage('Feed eliminado correctamente', 'success');
         } else {
           console.error('Error al eliminar feed:', response.message);
+          this.showMessage('Error al eliminar feed: ' + (response.message || 'Error desconocido'), 'error');
         }
       },
       error: (error) => {
         console.error('Error al eliminar feed:', error);
+        this.showMessage('Error al eliminar feed: ' + (error.error?.message || error.message || 'Error de conexión'), 'error');
       }
     });
   }
@@ -247,46 +260,50 @@ export class FeedsComponent implements OnInit, OnDestroy {
   }
 
   // Editar punto de datos específico
-  editDataPoint(feedKey: string, dataId: string, currentValue: string) {
-    const newValue = prompt(`Editar valor actual: ${currentValue}`, currentValue);
-    if (newValue !== null && newValue !== currentValue) {
-      this.feedsService.updateDataPoint(feedKey, dataId, newValue).subscribe({
-        next: (response) => {
-          if (response.success) {
-            console.log('Punto de datos actualizado');
-            if (this.selectedFeed && this.selectedFeed.key === feedKey) {
-              this.loadFeedData(feedKey); // Recargar datos del feed
-            }
-          } else {
-            console.error('Error al actualizar punto de datos:', response.message);
+  startInlineEdit(feedKey: string, dataId: string, currentValue: string) {
+    this.editingDataPoint = { feedKey, id: dataId, value: String(currentValue ?? '') };
+  }
+
+  saveEditedDataPoint() {
+    if (!this.editingDataPoint) return;
+    const { feedKey, id, value } = this.editingDataPoint;
+    this.feedsService.updateDataPoint(feedKey, id, value).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.showMessage('Dato actualizado correctamente', 'success');
+          if (this.selectedFeed && this.selectedFeed.key === feedKey) {
+            this.loadFeedData(feedKey);
           }
-        },
-        error: (error) => {
-          console.error('Error al actualizar punto de datos:', error);
+          this.cancelInlineEdit();
+        } else {
+          this.showMessage('Error al actualizar dato: ' + (response.message || 'Error desconocido'), 'error');
         }
-      });
-    }
+      },
+      error: (error) => {
+        this.showMessage('Error al actualizar dato: ' + (error.error?.message || error.message || 'Error de conexión'), 'error');
+      }
+    });
+  }
+
+  cancelInlineEdit() {
+    this.editingDataPoint = null;
   }
 
   // Eliminar punto de datos específico
-  deleteDataPoint(feedKey: string, dataId: string) {
-    if (confirm('¿Estás seguro de que quieres eliminar este punto de datos?')) {
-      this.feedsService.deleteDataPoint(feedKey, dataId).subscribe({
-        next: (response) => {
-          if (response.success) {
-            console.log('Punto de datos eliminado');
-            if (this.selectedFeed && this.selectedFeed.key === feedKey) {
-              this.loadFeedData(feedKey); // Recargar datos del feed
-            }
-          } else {
-            console.error('Error al eliminar punto de datos:', response.message);
-          }
-        },
-        error: (error) => {
-          console.error('Error al eliminar punto de datos:', error);
+  deleteDataPointImmediate(feedKey: string, dataId: string) {
+    this.feedsService.deleteDataPoint(feedKey, dataId).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.showMessage('Dato eliminado correctamente', 'success');
+          if (this.selectedFeed && this.selectedFeed.key === feedKey) this.loadFeedData(feedKey);
+        } else {
+          this.showMessage('Error al eliminar dato: ' + (response.message || 'Error desconocido'), 'error');
         }
-      });
-    }
+      },
+      error: (error) => {
+        this.showMessage('Error al eliminar dato: ' + (error.error?.message || error.message || 'Error de conexión'), 'error');
+      }
+    });
   }
 
   // Función para crear nuevo feed
@@ -309,7 +326,7 @@ export class FeedsComponent implements OnInit, OnDestroy {
     const normalized = this.normalizeKey(rawName);
 
     if (!normalized || normalized.length === 0) {
-      alert('El nombre del feed es requerido');
+  this.showMessage('El nombre del feed es requerido', 'error');
       return;
     }
 
@@ -331,19 +348,15 @@ export class FeedsComponent implements OnInit, OnDestroy {
           this.loadFeeds(); // Recargar la lista
           this.loadStats(); // Actualizar estadísticas
           this.closeCreateModal();
-          
-          // Mostrar mensaje de éxito
-          setTimeout(() => {
-            alert(`Feed "${feedData.name}" creado exitosamente!`);
-          }, 500);
+          this.showMessage(`Feed "${feedData.name}" creado exitosamente`, 'success');
         } else {
           console.error('Error al crear feed:', response.message);
-          alert('Error al crear feed: ' + (response.message || 'Error desconocido'));
+          this.showMessage('Error al crear feed: ' + (response.message || 'Error desconocido'), 'error');
         }
       },
       error: (error) => {
         console.error('Error al crear feed:', error);
-        alert('Error al crear feed: ' + (error.error?.message || error.message || 'Error de conexión'));
+        this.showMessage('Error al crear feed: ' + (error.error?.message || error.message || 'Error de conexión'), 'error');
       }
     });
   }
@@ -417,5 +430,15 @@ export class FeedsComponent implements OnInit, OnDestroy {
     } else {
       return 'Sin datos';
     }
+  }
+
+  // Mostrar mensajes temporales en la parte superior
+  private showMessage(msg: string, type: 'success' | 'error') {
+    this.message = msg;
+    this.messageType = type;
+    setTimeout(() => {
+      this.message = '';
+      this.messageType = '';
+    }, 4000);
   }
 }
