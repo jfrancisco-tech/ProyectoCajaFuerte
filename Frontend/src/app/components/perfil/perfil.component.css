@@ -79,6 +79,12 @@
   padding: 0.5rem 0.75rem;
 }
 
+/* Custom role colors */
+.role-badge-admin {
+  background-color: #0066cc !important;
+  color: #ffffff !important;
+}
+
 .btn {
   border-radius: 8px;
   font-weight: 500;
