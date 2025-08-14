@@ -22,8 +22,11 @@
           <!-- Avatar y información principal -->
           <div class="row mb-4">
             <div class="col-md-3 text-center">
-              <div class="avatar-circle">
-                <i class="fas fa-user"></i>
+              <div class="avatar-container">
+                <img [src]="getAvatarUrl(userProfile.nombre, userProfile.rol)" 
+                     [alt]="'Avatar de ' + userProfile.nombre" 
+                     class="avatar-image"
+                     [title]="userProfile.nombre + ' - ' + getRoleName(userProfile.rol)">
               </div>
             </div>
             <div class="col-md-9">
