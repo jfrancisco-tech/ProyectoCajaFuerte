@@ -5,7 +5,7 @@ import { LayoutComponent } from './components/layout/layout.component';
 import { CambiarContrasenaComponent } from './components/cambiar-contrasena/cambiar-contrasena.component';
 import { SensoresComponent } from './components/sensores/sensores.component';
 import { FeedsComponent } from './components/feeds/feeds.component';
-import { AuditoriaComponent } from './components/auditoria/auditoria.component';
+import { HistorialComponent } from './components/historial/historial.component';
 import { PerfilComponent } from './components/perfil/perfil.component';
 import { AuthGuard } from './guards/auth.guard';
 
@@ -21,7 +21,8 @@ export const routes: Routes = [
       { path: 'cambiar-contrasena', component: CambiarContrasenaComponent },
       { path: 'sensores', component: SensoresComponent },
       { path: 'feeds', component: FeedsComponent },
-      { path: 'auditoria', component: AuditoriaComponent },
+  { path: 'historial', component: HistorialComponent },
+  { path: 'auditoria', redirectTo: 'historial' },
       { path: 'perfil', component: PerfilComponent },
     ]
   },
