@@ -1,21 +1,420 @@
 <div class="container-fluid py-4">
-  <div class="row">
+  <!-- Header -->
+  <div class="row mb-4">
     <div class="col-12">
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">
-            <i class="fas fa-rss me-2"></i>
-            Feeds de Adafruit IO
-          </h3>
+      <div class="d-flex justify-content-between align-items-center">
+        <h2>
+          <i class="fas fa-rss me-2 text-primary"></i>
+          Feeds de Adafruit IO
+        </h2>
+        <div class="btn-group">
+          <button class="btn btn-outline-success" (click)="showCreateFeedModal()" [disabled]="loading">
+            <i class="fas fa-plus me-1"></i>
+            Nuevo Feed
+          </button>
+          <button class="btn btn-success" (click)="refreshFeeds()" [disabled]="loading">
+            <i class="fas fa-sync-alt me-2" [class.fa-spin]="loading"></i>
+            Actualizar
+          </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado General -->
+  <div class="row mb-4" *ngIf="stats">
+    <div class="col-md-6">
+      <div class="card border-left-primary shadow h-100">
         <div class="card-body">
-          <p>Aquí se mostrarán los feeds de Adafruit IO conectados a la caja fuerte.</p>
-          <div class="alert alert-info">
-            <i class="fas fa-info-circle me-2"></i>
-            Funcionalidad en desarrollo
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                Total de Feeds
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">
+                {{stats.total_feeds}} feeds
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-rss fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card border-left-warning shadow h-100">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                Feeds Activos
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">
+                {{stats.active_feeds}} de {{stats.total_feeds}}
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-check-circle fa-2x text-gray-300"></i>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Loading -->
+  <div class="row" *ngIf="loading && feeds.length === 0">
+    <div class="col-12 text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+      <p class="mt-3 text-muted">Cargando feeds de Adafruit IO...</p>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div class="row" *ngIf="error && !loading">
+    <div class="col-12">
+      <div class="alert alert-danger">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {{error}}
+        <button class="btn btn-sm btn-outline-danger ms-2" (click)="refreshFeeds()">
+          Reintentar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de Feeds -->
+  <div class="row" *ngIf="!loading || feeds.length > 0">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-list me-2"></i>
+            Lista de Feeds IoT
+          </h6>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Feed</th>
+                  <th>Último Valor</th>
+                  <th>Estado</th>
+                  <th>Actualización</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let feed of feeds; trackBy: trackByFeedId">
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="feed-icon me-3" [class]="getFeedStatusClass(feed)">
+                        <i [class]="getFeedIcon(feed.key)"></i>
+                      </div>
+                      <div>
+                        <div class="font-weight-bold">{{feed.name}}</div>
+                        <small class="text-muted">{{feed.key}}</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="badge" [class]="getValueBadgeClass(feed.last_value)">
+                      {{formatValue(feed.last_value, feed.unit_type, feed.unit_symbol)}}
+                    </span>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <div class="status-dot me-2" [class]="getStatusDotClass(feed)"></div>
+                      <span [class]="getStatusTextClass(feed)">
+                        {{getStatusText(feed)}}
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <div>
+                      <small class="d-block">{{formatDate(feed.updated_at)}}</small>
+                      <small class="text-muted">{{getTimeSince(feed.updated_at)}}</small>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="btn-group btn-group-sm" role="group">
+                      <button class="btn btn-outline-primary" (click)="showFeedDetails(feed)" title="Ver detalles">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                      <button class="btn btn-outline-warning" (click)="editFeed(feed)" title="Editar">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="btn btn-outline-danger" (click)="confirmDeleteFeed(feed)" title="Eliminar">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sin feeds -->
+  <div class="row" *ngIf="!loading && feeds.length === 0 && !error">
+    <div class="col-12 text-center py-5">
+      <i class="fas fa-rss fa-4x text-muted mb-3"></i>
+      <h4 class="text-muted">No hay feeds disponibles</h4>
+      <p class="text-muted">No se encontraron feeds en tu cuenta de Adafruit IO</p>
+      <button class="btn btn-primary" (click)="refreshFeeds()">
+        <i class="fas fa-sync-alt me-2"></i>
+        Actualizar
+      </button>
+    </div>
+  </div>
 </div>
+
+<!-- Modal para crear nuevo feed -->
+<div class="modal fade" [class.show]="showCreateModal" [style.display]="showCreateModal ? 'block' : 'none'" 
+     tabindex="-1" *ngIf="showCreateModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-plus me-2"></i>
+          Crear Nuevo Feed
+        </h5>
+        <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label class="form-label">Nombre del Feed *</label>
+            <input type="text" 
+                   class="form-control" 
+                   [(ngModel)]="createForm.name" 
+                   name="feedName" 
+                   placeholder="ej: temperatura-salon"
+                   required>
+            <div class="form-text">Se normaliza automáticamente: minúsculas, sin acentos, espacios→guiones</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Descripción (opcional)</label>
+            <textarea class="form-control" 
+                      [(ngModel)]="createForm.description" 
+                      name="feedDescription" 
+                      rows="3"
+                      placeholder="Describe brevemente qué datos almacenará este feed..."></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeCreateModal()">
+          Cancelar
+        </button>
+        <button type="button" 
+                class="btn btn-primary" 
+                (click)="createNewFeed()" 
+                [disabled]="!createForm.name || createForm.name.length < 1">
+          <i class="fas fa-save me-2"></i>
+          Crear Feed
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para editar feed -->
+<div class="modal fade" [class.show]="showEditModal" [style.display]="showEditModal ? 'block' : 'none'" 
+     tabindex="-1" *ngIf="showEditModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-edit me-2"></i>
+          Editar Feed: {{editingFeed?.name}}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeEditModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label class="form-label">Nombre del Feed *</label>
+            <input type="text" 
+                   class="form-control" 
+                   [(ngModel)]="editForm.name" 
+                   name="editFeedName" 
+                   required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Clave del Feed</label>
+            <input type="text" 
+                   class="form-control" 
+                   [value]="editingFeed?.key" 
+                   readonly
+                   style="background-color: #f8f9fa;">
+            <div class="form-text">La clave no se puede modificar</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Descripción</label>
+            <textarea class="form-control" 
+                      [(ngModel)]="editForm.description" 
+                      name="editFeedDescription" 
+                      rows="3"
+                      placeholder="Descripción del feed..."></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeEditModal()">
+          Cancelar
+        </button>
+        <button type="button" 
+                class="btn btn-warning" 
+                (click)="saveEditedFeed()" 
+                [disabled]="!editForm.name">
+          <i class="fas fa-save me-2"></i>
+          Guardar Cambios
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para confirmar eliminación -->
+<div class="modal fade" [class.show]="showDeleteModal" [style.display]="showDeleteModal ? 'block' : 'none'" 
+     tabindex="-1" *ngIf="showDeleteModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          Confirmar Eliminación
+        </h5>
+        <button type="button" class="btn-close" (click)="closeDeleteModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p>¿Estás seguro de que quieres eliminar el feed <strong>"{{feedToDelete?.name}}"</strong>?</p>
+        <div class="alert alert-warning">
+          <i class="fas fa-exclamation-circle me-2"></i>
+          Esta acción no se puede deshacer
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeDeleteModal()">Cancelar</button>
+        <button type="button" class="btn btn-danger" (click)="deleteFeedConfirmed()">
+          Eliminar Feed
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Backdrop para modales -->
+<div class="modal-backdrop fade show" 
+     *ngIf="showCreateModal || showEditModal || showDeleteModal"
+     (click)="showCreateModal ? closeCreateModal() : showEditModal ? closeEditModal() : closeDeleteModal()">
+</div>
+
+
+<!-- Modal de detalles del feed -->
+<div class="modal fade" [class.show]="showDetails" [style.display]="showDetails ? 'block' : 'none'" *ngIf="showDetails && selectedFeed">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i [class]="getFeedIcon(selectedFeed.key) + ' me-2'"></i>
+          {{selectedFeed.name}}
+        </h5>
+        <button type="button" class="btn-close" (click)="closeFeedDetails()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <strong>Clave del Feed:</strong> {{selectedFeed.key}}
+          </div>
+          <div class="col-md-6">
+            <strong>ID:</strong> {{selectedFeed.id}}
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <strong>Último Valor:</strong>
+            <span [class]="'badge ms-2 ' + (selectedFeed.last_value && selectedFeed.last_value !== 'N/A' ? 'bg-primary' : 'bg-secondary')">
+              {{formatValue(selectedFeed.last_value, selectedFeed.unit_type, selectedFeed.unit_symbol)}}
+            </span>
+          </div>
+          <div class="col-md-6">
+            <strong>Visibilidad:</strong>
+            <span [class]="'badge ms-2 ' + (selectedFeed.visibility === 'private' ? 'bg-warning' : 'bg-info')">
+              {{selectedFeed.visibility === 'private' ? 'Privado' : 'Público'}}
+            </span>
+          </div>
+        </div>
+        <div class="row mb-3" *ngIf="selectedFeed.description && selectedFeed.description !== 'Sin descripción'">
+          <div class="col-12">
+            <strong>Descripción:</strong> {{selectedFeed.description}}
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <strong>Creado:</strong> {{formatDate(selectedFeed.created_at)}}
+          </div>
+          <div class="col-md-6">
+            <strong>Actualizado:</strong> {{formatDate(selectedFeed.updated_at)}}
+          </div>
+        </div>
+        
+        <!-- Datos recientes -->
+        <div class="mt-4" *ngIf="feedData.length > 0">
+          <h6><i class="fas fa-history me-2"></i>Datos Recientes</h6>
+          <div class="table-responsive">
+            <table class="table table-sm">
+              <thead>
+                <tr>
+                  <th>Valor</th>
+                  <th>Fecha</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of feedData.slice(0, 10)">
+                  <td>
+                    <span class="badge bg-light text-dark">
+                      {{formatValue(data.value, selectedFeed.unit_type, selectedFeed.unit_symbol)}}
+                    </span>
+                  </td>
+                  <td><small>{{formatDate(data.created_at)}}</small></td>
+                  <td>
+                    <div class="btn-group" role="group">
+                      <button class="btn btn-xs btn-outline-warning" (click)="editDataPoint(selectedFeed.key, data.id, data.value)" title="Editar">
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button class="btn btn-xs btn-outline-danger" (click)="deleteDataPoint(selectedFeed.key, data.id)" title="Eliminar">
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <div class="mt-4" *ngIf="feedData.length === 0">
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i>
+            No hay datos recientes disponibles para este feed.
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeFeedDetails()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade" [class.show]="showDetails" *ngIf="showDetails"></div>
+
