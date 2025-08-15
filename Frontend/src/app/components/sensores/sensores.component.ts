@@ -331,26 +331,6 @@ export class SensoresComponent implements OnInit, OnDestroy, AfterViewInit {
     return 'badge-success';
   }
 
-  getTempClass(): string {
-    const temp = this.ambientalData.temperature;
-    if (temp < 18 || temp > 27) return 'text-warning';
-    return 'text-success';
-  }
-
-  getTempProgress(): number {
-    return Math.min(100, (this.ambientalData.temperature / 40) * 100);
-  }
-
-  getHumidityClass(): string {
-    const humidity = this.ambientalData.humidity;
-    if (humidity < 30 || humidity > 60) return 'text-warning';
-    return 'text-success';
-  }
-
-  getHumidityProgress(): number {
-    return Math.min(100, this.ambientalData.humidity);
-  }
-
   getObjectStatusClass(): string {
     return this.objectData.detected ? 'text-danger' : 'text-success';
   }
