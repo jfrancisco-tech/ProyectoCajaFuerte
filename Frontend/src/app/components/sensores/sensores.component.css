@@ -111,30 +111,6 @@
   border-radius: 4px;
 }
 
-/* Valores de sensores */
-.temp-value,
-.humidity-value {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin: 15px 0;
-}
-
-.temp-value.text-success {
-  color: #1cc88a !important;
-}
-
-.temp-value.text-warning {
-  color: #f6c23e !important;
-}
-
-.humidity-value.text-success {
-  color: #1cc88a !important;
-}
-
-.humidity-value.text-warning {
-  color: #f6c23e !important;
-}
-
 /* Información adicional */
 .info-box {
   background: #f8f9fc;

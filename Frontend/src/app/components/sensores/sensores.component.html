@@ -115,52 +115,6 @@
     </div>
   </div>
 
-  <!-- Sensores Ambientales -->
-  <div class="row mb-4">
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header py-3">
-          <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-thermometer-half me-2"></i>
-            Temperatura
-          </h6>
-        </div>
-        <div class="card-body text-center">
-          <div class="temperature-display">
-            <div class="temp-value" [class]="getTempClass()">
-              {{ ambientalData?.temperature || '--' }}°C
-            </div>
-            <div class="temp-bar">
-              <div class="temp-progress" [style.width.%]="getTempProgress()"></div>
-            </div>
-            <small class="text-muted">Rango óptimo: 18-27°C</small>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-6">
-      <div class="card shadow">
-        <div class="card-header py-3">
-          <h6 class="m-0 font-weight-bold text-primary">
-            <i class="fas fa-tint me-2"></i>
-            Humedad
-          </h6>
-        </div>
-        <div class="card-body text-center">
-          <div class="humidity-display">
-            <div class="humidity-value" [class]="getHumidityClass()">
-              {{ ambientalData?.humidity || '--' }}%
-            </div>
-            <div class="humidity-bar">
-              <div class="humidity-progress" [style.width.%]="getHumidityProgress()"></div>
-            </div>
-            <small class="text-muted">Rango óptimo: 30-60%</small>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Sensores de Seguridad -->
   <div class="row mb-4">
     <div class="col-md-6">
@@ -247,7 +201,7 @@
         <div class="card-header py-3">
           <h6 class="m-0 font-weight-bold text-primary">
             <i class="fas fa-chart-line me-2"></i>
-            Monitoreo en Tiempo Real
+            Monitoreo Ambiental en Tiempo Real
           </h6>
         </div>
         <div class="card-body">
