@@ -58,7 +58,7 @@ export class PerfilComponent implements OnInit {
   getRoleColor(rol: string): string {
     switch(rol) {
       case 'admin':
-        return 'badge bg-danger';
+  return 'badge role-badge-admin';
       case 'usuario':
         return 'badge bg-primary';
       default:

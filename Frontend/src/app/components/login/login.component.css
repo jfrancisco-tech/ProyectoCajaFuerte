@@ -77,14 +77,21 @@
 
 /* Imagen lateral */
 .image-background {
-  background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80');
+  /* Usa tu imagen local (ruta relativa desde este CSS hacia src/assets) */
+  background-image:  url('../../../assets/caja.png');
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
   border-radius: 18px 0 0 18px;
   min-width: 400px;
   min-height: 500px;
   box-shadow: none;
   transition: box-shadow 0.3s;
+}
+
+/* Alternativa: usar atributo style en HTML con una imagen distinta */
+.image-background[data-src] {
+  background-image: var(--bg-image), linear-gradient(135deg, rgba(102,126,234,0.35) 0%, rgba(118,75,162,0.45) 100%);
 }
 
 .image-background:hover {

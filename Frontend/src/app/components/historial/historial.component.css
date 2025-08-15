@@ -1,0 +1,8 @@
+/* Ajustes mínimos para filtros en el header */
+.filters {
+	gap: .5rem;
+}
+
+@media (max-width: 576px) {
+	.filters label { display: none; }
+}
