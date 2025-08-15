@@ -189,8 +189,8 @@ export class SensoresComponent implements OnInit, OnDestroy, AfterViewInit {
           this.objectData.distance = distance;
           
           const wasDetected = this.objectData.detected;
-          // Objeto detectado si la distancia es menor a 18 cm
-          this.objectData.detected = distance < 18;
+          // Objeto detectado si la distancia es menor o igual a 16 cm
+          this.objectData.detected = distance <= 16;
           
           if (wasDetected !== this.objectData.detected) {
             this.addEvent('sensor', 
@@ -280,7 +280,7 @@ export class SensoresComponent implements OnInit, OnDestroy, AfterViewInit {
   simulateObjectData() {
     this.objectData.distance = 10 + Math.random() * 30; // 10-40cm
     const wasDetected = this.objectData.detected;
-    this.objectData.detected = this.objectData.distance < 18;
+    this.objectData.detected = this.objectData.distance <= 16;
     
     if (wasDetected !== this.objectData.detected) {
       this.addEvent('sensor', 
@@ -352,7 +352,7 @@ export class SensoresComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   getObjectStatusClass(): string {
-    return this.objectData.detected ? 'text-success' : 'text-muted';
+    return this.objectData.detected ? 'text-danger' : 'text-success';
   }
 
   getObjectIcon(): string {
@@ -369,6 +369,16 @@ export class SensoresComponent implements OnInit, OnDestroy, AfterViewInit {
 
   getVibrationStatus(): string {
     return this.vibrationData.detected ? 'MOVIMIENTO' : 'ESTABLE';
+  }
+
+  // Método para posición del blip en el radar
+  getBlipPosition(): number {
+    if (!this.objectData.distance) return 50;
+    // Convertir distancia a posición en el radar (0-100%)
+    // 0cm = centro (50%), 40cm+ = borde (10% o 90%)
+    const maxDistance = 40;
+    const distancePercent = Math.min(this.objectData.distance / maxDistance, 1);
+    return 50 - (distancePercent * 40); // Centro hacia arriba
   }
 
   // Eventos
