@@ -125,6 +125,11 @@
   box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
 }
 
+/* Make details modal non-blocking */
+.modal.fade.show {
+  background: rgba(0, 0, 0, 0.5);
+}
+
 .modal-header {
   border-bottom: 1px solid #e3e6f0;
   padding: 1.25rem;
@@ -168,6 +173,10 @@
   background-color: #fff3cd;
   color: #856404;
 }
+
+/* Compact button text inside small groups */
+.btn-group-sm .btn i { margin-right: 4px; }
+.btn-xs { padding: 0.15rem 0.4rem; font-size: 0.7rem; border-radius: .2rem; }
 
 /* Loading and empty states */
 .spinner-border {

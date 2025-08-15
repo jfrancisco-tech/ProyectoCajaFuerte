@@ -18,6 +18,9 @@ router.post('/logout', authMiddleware, AuthController.logout);
 // Cambiar contraseña del teclado (requiere autenticación)
 router.post('/change-keypad-password', authMiddleware, AuthController.changeKeypadPassword);
 
+// Endpoint temporal para inicializar PIN por defecto (solo desarrollo)
+router.post('/initialize-default-pin', AuthController.initializeDefaultPin);
+
 // Obtener perfil del usuario autenticado
 router.get('/profile', authMiddleware, (req, res) => {
   res.json({

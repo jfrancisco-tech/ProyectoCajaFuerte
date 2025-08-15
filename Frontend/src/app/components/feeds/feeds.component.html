@@ -14,7 +14,7 @@
           </button>
           <button class="btn btn-success" (click)="refreshFeeds()" [disabled]="loading">
             <i class="fas fa-sync-alt me-2" [class.fa-spin]="loading"></i>
-            Actualizar
+            Actualizar lista
           </button>
         </div>
       </div>
@@ -86,6 +86,16 @@
     </div>
   </div>
 
+  <!-- Mensaje de estado -->
+  <div class="row" *ngIf="message">
+    <div class="col-12">
+      <div class="alert" [ngClass]="{ 'alert-success': messageType==='success', 'alert-danger': messageType==='error' }">
+        <i class="fas" [ngClass]="{ 'fa-check-circle': messageType==='success', 'fa-exclamation-triangle': messageType==='error' }"></i>
+        <span class="ms-2">{{message}}</span>
+      </div>
+    </div>
+  </div>
+
   <!-- Lista de Feeds -->
   <div class="row" *ngIf="!loading || feeds.length > 0">
     <div class="col-12">
@@ -141,15 +151,18 @@
                     </div>
                   </td>
                   <td>
-                    <div class="btn-group btn-group-sm" role="group">
-                      <button class="btn btn-outline-primary" (click)="showFeedDetails(feed)" title="Ver detalles">
-                        <i class="fas fa-eye"></i>
+                    <div class="btn-group" role="group">
+                      <button class="btn btn-sm btn-primary" (click)="showFeedDetails(feed)" title="Ver detalles">
+                        <i class="fas fa-eye me-1"></i>
+                        Ver
                       </button>
-                      <button class="btn btn-outline-warning" (click)="editFeed(feed)" title="Editar">
-                        <i class="fas fa-edit"></i>
+                      <button class="btn btn-sm btn-warning" (click)="editFeed(feed)" title="Editar feed">
+                        <i class="fas fa-edit me-1"></i>
+                        Editar
                       </button>
-                      <button class="btn btn-outline-danger" (click)="confirmDeleteFeed(feed)" title="Eliminar">
-                        <i class="fas fa-trash"></i>
+                      <button class="btn btn-sm btn-danger" (click)="confirmDeleteFeed(feed)" title="Eliminar feed">
+                        <i class="fas fa-trash me-1"></i>
+                        Eliminar
                       </button>
                     </div>
                   </td>
@@ -312,10 +325,9 @@
   </div>
 </div>
 
-<!-- Backdrop para modales -->
+<!-- Backdrop para modales principales (crear/editar/eliminar feed) -->
 <div class="modal-backdrop fade show" 
-     *ngIf="showCreateModal || showEditModal || showDeleteModal"
-     (click)="showCreateModal ? closeCreateModal() : showEditModal ? closeEditModal() : closeDeleteModal()">
+  *ngIf="showCreateModal || showEditModal || showDeleteModal">
 </div>
 
 
@@ -382,18 +394,40 @@
               <tbody>
                 <tr *ngFor="let data of feedData.slice(0, 10)">
                   <td>
-                    <span class="badge bg-light text-dark">
-                      {{formatValue(data.value, selectedFeed.unit_type, selectedFeed.unit_symbol)}}
-                    </span>
+                    <ng-container *ngIf="!(editingDataPoint && editingDataPoint.id === data.id); else editCell">
+                      <span class="badge bg-light text-dark">
+                        {{formatValue(data.value, selectedFeed.unit_type, selectedFeed.unit_symbol)}}
+                      </span>
+                    </ng-container>
+                    <ng-template #editCell>
+                      <div class="input-group input-group-sm" style="max-width: 260px;">
+                        <input type="text" class="form-control" [(ngModel)]="editingDataPoint!.value" name="editDataValue_{{data.id}}">
+                        <button class="btn btn-success" (click)="saveEditedDataPoint()">
+                          <i class="fas fa-check me-1"></i>
+                          Guardar
+                        </button>
+                        <button class="btn btn-secondary" (click)="cancelInlineEdit()">
+                          <i class="fas fa-times me-1"></i>
+                          Cancelar
+                        </button>
+                      </div>
+                    </ng-template>
                   </td>
                   <td><small>{{formatDate(data.created_at)}}</small></td>
                   <td>
                     <div class="btn-group" role="group">
-                      <button class="btn btn-xs btn-outline-warning" (click)="editDataPoint(selectedFeed.key, data.id, data.value)" title="Editar">
-                        <i class="fas fa-edit"></i>
+                      <button class="btn btn-xs btn-warning" 
+                              *ngIf="!(editingDataPoint && editingDataPoint.id === data.id)"
+                              (click)="startInlineEdit(selectedFeed.key, data.id, data.value)" 
+                              title="Editar valor">
+                        <i class="fas fa-edit me-1"></i>
+                        Editar
                       </button>
-                      <button class="btn btn-xs btn-outline-danger" (click)="deleteDataPoint(selectedFeed.key, data.id)" title="Eliminar">
-                        <i class="fas fa-trash"></i>
+                      <button class="btn btn-xs btn-danger" 
+                              (click)="deleteDataPointImmediate(selectedFeed.key, data.id)" 
+                              title="Eliminar valor">
+                        <i class="fas fa-trash me-1"></i>
+                        Eliminar
                       </button>
                     </div>
                   </td>
@@ -416,5 +450,4 @@
     </div>
   </div>
 </div>
-<div class="modal-backdrop fade" [class.show]="showDetails" *ngIf="showDetails"></div>
 

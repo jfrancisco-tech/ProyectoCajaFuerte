@@ -173,16 +173,39 @@
         </div>
         <div class="card-body">
           <div class="row align-items-center">
-            <div class="col-auto">
-              <div class="object-indicator" [class]="getObjectStatusClass()">
-                <i [class]="getObjectIcon()" class="fa-2x"></i>
+            <div class="col-md-6">
+              <!-- Radar sonar simple -->
+              <div class="simple-sonar-radar">
+                <div class="radar-container">
+                  <div class="radar-screen">
+                    <div class="radar-sweep" [class.active]="objectData?.detected"></div>
+                    <div class="radar-grid">
+                      <div class="grid-circle"></div>
+                      <div class="grid-circle"></div>
+                      <div class="grid-line horizontal"></div>
+                      <div class="grid-line vertical"></div>
+                    </div>
+                    <div class="radar-blip" 
+                         [class.detected]="objectData?.detected"
+                         [style.top.%]="getBlipPosition()"
+                         [style.left.%]="50">
+                    </div>
+                    <div class="radar-center"></div>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="col">
+            <div class="col-md-6">
               <div class="object-info">
                 <h5>{{ objectData?.detected ? 'Objeto Detectado' : 'Sin Objetos' }}</h5>
                 <p class="mb-1">Distancia: <strong>{{ objectData?.distance || '--' }} cm</strong></p>
-                <small class="text-muted">Sensibilidad: < 18cm</small>
+                <small class="text-muted">Umbral: ≤ 16cm</small>
+                <div class="mt-3">
+                  <div class="alert" [class]="objectData?.detected ? 'alert-danger' : 'alert-success'">
+                    <i [class]="objectData?.detected ? 'fas fa-exclamation-triangle' : 'fas fa-check-circle'"></i>
+                    {{ objectData?.detected ? 'Objeto dentro del perímetro' : 'Área despejada' }}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
